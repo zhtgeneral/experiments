@@ -12,6 +12,7 @@
     "@growthbook/growthbook": "^1.1.0",
     "@growthbook/growthbook-react": "^1.1.0",
     "axios": "^1.7.5",
+    "bowser": "^2.11.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
