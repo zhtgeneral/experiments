@@ -9,14 +9,6 @@ import * as Bowser from "bowser"
 export default function Home() {
   useEffect(() => {
     async function init() {
-      // // below saves the exp id in cache
-      // let userId = localStorage.getItem('userId');
-      // if (!userId) {
-      //   userId = Math.random().toString(36).substring(2, 15);
-      //   localStorage.setItem('userId', userId);
-      // }
-      // const userId = Math.random().toString(36).substring(2, 15);
-
       // below makes a new exp id each refresh
       const userId = Math.random().toString(36).substring(2, 15);
 
@@ -27,7 +19,7 @@ export default function Home() {
         id: userId,
         browser: browser,
       });
-      
+
       await growthbook.init({
         streaming: true,
       });
