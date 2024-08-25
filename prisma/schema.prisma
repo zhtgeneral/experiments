@@ -10,11 +10,10 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("NEXT_PUBLIC_DATABASE_URL")
 }
 
 model Record {
-  // id              Int     @id   @default(autoincrement())
   id              String  @id 
   experimentId    String  @db.VarChar(20)
   variationId     String  @db.VarChar(20)
@@ -30,7 +29,5 @@ model Record {
   engine          String  @db.VarChar(20)
   platformType    String  @db.VarChar(20)
   location        String  @db.VarChar(30)
-  createdAt       DateTime @default(now())
-  // pageLoadTime    String?  @db.VarChar(20)
   timeSpentOnPage String? @db.VarChar(20)
 }
