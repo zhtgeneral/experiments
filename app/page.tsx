@@ -5,20 +5,21 @@ import growthbook from "@/lib/growthbook";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
 import { useEffect } from "react";
 import * as Bowser from "bowser"
-import trackExperimentViewed from "@/lib/trackExperimentViewed";
+import axios from "axios";
 
 export default function Home() {
   useEffect(() => {
+    // below makes a new exp id each refresh
+    const userId = Math.random().toString(36).substring(2, 15);
+    
     async function init() {
-      // below makes a new exp id each refresh
-      const userId = Math.random().toString(36).substring(2, 15);
-
       // below gets info
-      const browser        = Bowser.getParser(window.navigator.userAgent).getBrowserName().toLowerCase();
-      const browserVersion = Bowser.getParser(window.navigator.userAgent).getBrowserVersion();
-      const os             = Bowser.getParser(window.navigator.userAgent).getOSName().toLowerCase();
-      const engine         = Bowser.getParser(window.navigator.userAgent).getEngineName().toLowerCase();
-      const platformType   = Bowser.getParser(window.navigator.userAgent).getPlatformType().toLowerCase();
+      const parser = Bowser.getParser(window.navigator.userAgent)
+      const browser        = parser.getBrowserName().toLowerCase();
+      const browserVersion = parser.getBrowserVersion();
+      const os             = parser.getOSName().toLowerCase();
+      const engine         = parser.getEngineName().toLowerCase();
+      const platformType   = parser.getPlatformType().toLowerCase();
 
       // below gets location
       var location: string;
@@ -64,13 +65,20 @@ export default function Home() {
 
     // below tracks experiment viewed when leaving the page
     const handleBeforeUnload = () => {
-      const timeSpentOnPage = (Date.now() - growthbook.getAttributes().pageLoadTime) / 1000;
-      console.log("Time spent on page:", timeSpentOnPage);
-      // trackExperimentViewed(timeSpentOnPage);
+      const timeSpentOnPage = (Date.now() - growthbook.getAttributes().pageLoadTime) / 1000; console.log("Time spent on page:", timeSpentOnPage);
+
       growthbook.setAttributes({ 
-        timeSpentOnPage: timeSpentOnPage
+        timeSpentOnPage: timeSpentOnPage.toString()
       });
-      // growthbook.triggerExperiment(growthbook.getExperiments()[0].key);
+
+      async function update() {
+        const attributes = growthbook.getAttributes();
+        const data = {
+          timeSpentOnPage: attributes.timeSpentOnPage
+        } 
+        await axios.put(`/api/record/${userId}`, data)      
+      }
+      update()
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
