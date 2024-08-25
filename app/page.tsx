@@ -5,6 +5,7 @@ import growthbook from "@/lib/growthbook";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
 import { useEffect } from "react";
 import * as Bowser from "bowser"
+import trackExperimentViewed from "@/lib/trackExperimentViewed";
 
 export default function Home() {
   useEffect(() => {
@@ -29,16 +30,15 @@ export default function Home() {
           os: os,
           engine: engine,
           deviceType: platformType,
-          location: location
+          location: location,
+          pageLoadTime: Date.now()
         });
-        console.log('attributes: ', growthbook.getAttributes());
         await growthbook.init({
           streaming: true,
         }); 
       }
       function parseLocation(position: GeolocationPosition) {
         location = position.coords.latitude + "," + position.coords.longitude;
-        console.log('location: ', location);
         setAttributesInit(location)
       }
       function parseError(error: GeolocationPositionError) {
@@ -61,6 +61,22 @@ export default function Home() {
       navigator.geolocation.getCurrentPosition(parseLocation, parseError);
     }
     init();
+
+    // below tracks experiment viewed when leaving the page
+    const handleBeforeUnload = () => {
+      const timeSpentOnPage = (Date.now() - growthbook.getAttributes().pageLoadTime) / 1000;
+      console.log("Time spent on page:", timeSpentOnPage);
+      // trackExperimentViewed(timeSpentOnPage);
+      growthbook.setAttributes({ 
+        timeSpentOnPage: timeSpentOnPage
+      });
+      // growthbook.triggerExperiment(growthbook.getExperiments()[0].key);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
   
   return (
