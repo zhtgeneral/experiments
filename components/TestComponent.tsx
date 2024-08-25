@@ -1,7 +1,7 @@
 'use client'
 
-import { useFeature, useGrowthBook } from "@growthbook/growthbook-react";
-import React, { useEffect, useState } from "react"
+import { useFeature } from "@growthbook/growthbook-react";
+import React, { useEffect, useState } from "react";
 
 const TestComponent = () => {
   const [loaded, setLoaded] = useState(false);

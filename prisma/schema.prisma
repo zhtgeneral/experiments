@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Record {
+  // id              Int     @id   @default(autoincrement())
+  id              String  @id 
+  experimentId    String  @db.VarChar(20)
+  variationId     String  @db.VarChar(20)
+  weekday         String  @db.VarChar(3)
+  day             String  @db.VarChar(2)
+  month           String  @db.VarChar(3)
+  year            String  @db.VarChar(4)
+  time            String  @db.VarChar(20)
+  timeRegion      String  @db.VarChar(10)
+  browser         String  @db.VarChar(20)
+  browserVersion  String  @db.VarChar(20)
+  os              String  @db.VarChar(20)
+  engine          String  @db.VarChar(20)
+  platformType    String  @db.VarChar(20)
+  location        String  @db.VarChar(30)
+  createdAt       DateTime @default(now())
+  // pageLoadTime    String?  @db.VarChar(20)
+  timeSpentOnPage String? @db.VarChar(20)
+}
