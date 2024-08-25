@@ -50,7 +50,6 @@ const growthbook = new GrowthBook({
         engine: attributes.engine,
         platformType: attributes.deviceType,
         location: attributes.location,
-        createdAt: new Date(),
         timeSpentOnPage: null
       }
       await axios.post('/api/record', newRecord)
