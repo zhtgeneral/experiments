@@ -6,11 +6,15 @@ import { GrowthBookProvider } from "@growthbook/growthbook-react";
 import { useEffect } from "react";
 import * as Bowser from "bowser"
 import axios from "axios";
+import getUserId from "@/hooks/getUserId";
 
 export default function Home() {
   useEffect(() => {
     // below makes a new exp id each refresh
-    const userId = Math.random().toString(36).substring(2, 15);
+    // const userId = Math.random().toString(36).substring(2, 15);
+
+    // below makes a new exp id every 5 min
+    const userId = getUserId();
     
     async function init() {
       // below gets info
