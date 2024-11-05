@@ -15,20 +15,21 @@ datasource db {
 }
 
 model Record {
-  id              String  @id 
-  experimentId    String  @db.VarChar(20)
-  variationId     String  @db.VarChar(20)
-  weekday         String  @db.VarChar(3)
-  day             String  @db.VarChar(2)
-  month           String  @db.VarChar(3)
-  year            String  @db.VarChar(4)
-  time            String  @db.VarChar(20)
-  timeRegion      String  @db.VarChar(10)
-  browser         String  @db.VarChar(20)
-  browserVersion  String  @db.VarChar(20)
-  os              String  @db.VarChar(20)
-  engine          String  @db.VarChar(20)
-  platformType    String  @db.VarChar(20)
-  location        String  @db.VarChar(30)
-  sessionLength   String? @db.VarChar(20)
+  id              String    @id 
+  experimentId    String    @db.VarChar(20)
+  variationId     String    @db.VarChar(20)
+  weekday         String    @db.VarChar(3)
+  day             String    @db.VarChar(2)
+  month           String    @db.VarChar(3)
+  year            String    @db.VarChar(4)
+  time            String    @db.VarChar(20)
+  createdAt       DateTime  @default(now())
+  timeRegion      String    @db.VarChar(10)
+  browser         String    @db.VarChar(20)
+  browserVersion  String    @db.VarChar(20)
+  os              String    @db.VarChar(20)
+  engine          String    @db.VarChar(20)
+  platformType    String    @db.VarChar(20)
+  location        String    @db.VarChar(30)
+  sessionLength   String?   @db.VarChar(20) 
 }

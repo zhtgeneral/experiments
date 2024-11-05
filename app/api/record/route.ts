@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from '@/lib/prisma'
+import { HttpStatusCode } from "axios";
 
 /**
  * This endpoint handles creating tracking records.
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     if (!body.id) {
-      return new NextResponse("Bad request", { status: 400 });
+      return new NextResponse("Bad request", { status: HttpStatusCode.BadRequest });
     }
     const oldRecord = await prisma.record.findFirst({
       where: {
@@ -31,7 +32,9 @@ export async function POST(request: NextRequest) {
       }
     })
     if (oldRecord) {
-      return NextResponse.json({ error: 'Record already exists and will be skipped' }, { status: 100 })
+      return NextResponse.json({ error: 'Record already exists and will be skipped' }, 
+        { status: HttpStatusCode.Continue }
+      )
     }
     
     const newRecord = await prisma.record.create({
@@ -39,9 +42,10 @@ export async function POST(request: NextRequest) {
         ...body
       },
     })  
-    return NextResponse.json(newRecord, { status: 201 })
+    return NextResponse.json(newRecord, { status: HttpStatusCode.Created })
   } catch (error: any) {
-    return NextResponse.json("Internal Server Error", { status: 500 })
+    // return NextResponse.json("Internal Server Error", { status: 500 });
+    return NextResponse.json(error.message, { status: HttpStatusCode.InternalServerError });
   }
 }
 

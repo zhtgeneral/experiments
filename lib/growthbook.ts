@@ -21,6 +21,7 @@ const growthbook = new GrowthBook({
       month: dateDestructure.month,
       year: dateDestructure.year,
       time: dateDestructure.time,
+      createdAt: date,
       timeRegion: dateDestructure.timeRegion,
       browser: attributes.browser,
       browserVersion: attributes.browserVersion,

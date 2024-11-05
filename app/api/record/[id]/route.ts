@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import prisma from '@/lib/prisma'
+import { HttpStatusCode } from "axios";
 
 /**
  * This endpoint handles updated tracking records.
@@ -8,9 +9,13 @@ import prisma from '@/lib/prisma'
  * and that the id exists on params.
  * If not, throw a `400` response for `Bad request`.
  * 
+ * If there is no existing tracking record, return a `404` response for `Not Found`.
+ * 
  * Otherwise it updates the existing record in the database 
  * and returns a `201` response for `OK`
  * then return the response as an object.
+ * 
+ * On duplicate exising records, it takes the record most recently created.
  * 
  * If any other error occurs at any point, 
  * return a `500` error for `Internal Server Error`.
@@ -24,18 +29,31 @@ export async function PUT(
   try {
     const body = await req.json();
     if (!body.sessionLength || !params.id) {
-      return new NextResponse("Bad Request", { status: 400 });
+      return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
     }    
-    const updatedRecord = await prisma.record.update({
+    const existingRecord = await prisma.record.findFirst({
       where: {
         id: params.id
+      },
+      orderBy: [
+        {
+          createdAt: "desc"
+        }
+      ]
+    });
+    if (!existingRecord) {
+      return new NextResponse("Not Found", { status: HttpStatusCode.NotFound })
+    }
+    const updatedRecord = await prisma.record.update({
+      where: {
+        id: existingRecord.id
       },
       data: {
         sessionLength: body.sessionLength
       }
     })
-    return NextResponse.json(updatedRecord, { status: 200 })
+    return NextResponse.json(updatedRecord, { status: HttpStatusCode.Ok })
   } catch (error: any) {
-    return NextResponse.json("Internal Server Error", { status: 500 })
+    return NextResponse.json(error.message, { status: HttpStatusCode.InternalServerError });
   }
 }

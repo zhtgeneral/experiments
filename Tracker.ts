@@ -3,10 +3,10 @@ import axios from "axios";
 
 export default class Tracker {
   /**
-   * This function cretes a record of the current tracking session
+   * This function creates a record of the current tracking session
    */
   public static async createRecord(record: Record) {
-    console.log("record: " + record);
+    console.log("record: " + JSON.stringify(record, null , 2));
     await axios.post('/api/record', record);
   }
 
@@ -20,7 +20,7 @@ export default class Tracker {
     const data = {
       sessionLength: sessionLength.toString()
     } 
-    const response = await axios.put(`/api/record/${userId}`, data);
-    console.log("updated record: " + response.data)
+    const response = await axios.put(`/api/record/${userId}`, data, );
+    console.log("updated record: " + JSON.stringify(response.data, null, 2))
   }
 }
