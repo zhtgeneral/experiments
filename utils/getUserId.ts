@@ -1,6 +1,12 @@
+/**
+ * This helper function generates a random userId.
+ * It generates a new id every 5 minutes and retrieves it from local storage.
+ * The userId is length 
+ */
 export default function getUserId(): string {
   if (typeof window === 'undefined' || !window.localStorage) {
-    return Math.random().toString(36).substring(2, 15);
+    const userId = Math.random().toString(36).substring(2, 15);
+    return userId;
   }
 
   const now = Date.now();
@@ -9,7 +15,6 @@ export default function getUserId(): string {
   if (storedData) {
     try {
       const { id, timestamp } = JSON.parse(storedData);
-      // if (now - timestamp < 300000) {
       if (now - timestamp < 10000) {
         return id;
       }
@@ -19,6 +24,7 @@ export default function getUserId(): string {
   }
 
   const newId = Math.random().toString(36).substring(2, 15);
-  localStorage.setItem('userId', JSON.stringify({ id: newId, timestamp: now }));
+  const storageId = JSON.stringify({ id: newId, timestamp: now })
+  localStorage.setItem('userId', storageId);
   return newId;
 }

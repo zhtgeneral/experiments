@@ -1,60 +1,37 @@
+import Tracker from "@/Tracker";
+import destructureDate from "@/utils/destructureDate";
 import { GrowthBook } from "@growthbook/growthbook-react";
-import axios from "axios";
+import { Record } from "@prisma/client";
 
 const growthbook = new GrowthBook({
   apiHost: "https://cdn.growthbook.io",
   clientKey: process.env.NEXT_PUBLIC_GROWTHBOOK_CLIENT_KEY,
   enableDevMode: true,
-  trackingCallback: (experiment, result) => {
-    const date = (new Date()).toUTCString();
-    const parts = date.split(" ");
-    const weekday    = parts[0].slice(0, -1);  // Remove the comma
-    const day        = parts[1];
-    const month      = parts[2];
-    const year       = parts[3];
-    const time       = parts[4];
-    const timeRegion = parts[5];
+  trackingCallback: async (experiment, result) => {
+    const date = new Date();
+    const dateDestructure = destructureDate(date);
     const attributes = growthbook.getAttributes();
-      
-    console.log("Viewed Experiment", {
+
+    const record: Record = {
+      id: attributes.id,
       experimentId: experiment.key,
       variationId: result.key,
-      weekday: weekday,
-      day: day,
-      month: month,
-      year: year,
-      time: time,
-      timeRegion: timeRegion,
+      weekday: dateDestructure.weekday,
+      day: dateDestructure.day,
+      month: dateDestructure.month,
+      year: dateDestructure.year,
+      time: dateDestructure.time,
+      createdAt: date,
+      timeRegion: dateDestructure.timeRegion,
       browser: attributes.browser,
       browserVersion: attributes.browserVersion,
       os: attributes.os,
       engine: attributes.engine,
       platformType: attributes.deviceType,
       location: attributes.location,
-    });
-    
-    async function createRecord() {
-      const newRecord = {
-        id: attributes.id,
-        experimentId: experiment.key,
-        variationId: result.key,
-        weekday: weekday,
-        day: day,
-        month: month,
-        year: year,
-        time: time,
-        timeRegion: timeRegion,
-        browser: attributes.browser,
-        browserVersion: attributes.browserVersion,
-        os: attributes.os,
-        engine: attributes.engine,
-        platformType: attributes.deviceType,
-        location: attributes.location,
-        timeSpentOnPage: null
-      }
-      await axios.post('/api/record', newRecord)
+      sessionLength: null
     }
-    createRecord();
+    await Tracker.createRecord(record);
   },
 });
 export default growthbook;
