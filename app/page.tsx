@@ -1,52 +1,30 @@
 'use client'
 
-import TestComponent from "@/components/TestComponent";
+import ExperimentPage from "@/components/Experiment";
 import growthbook from "@/lib/growthbook";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
 import { useEffect } from "react";
 import * as Bowser from "bowser"
-import axios from "axios";
-import getUserId from "@/hooks/getUserId";
+import getUserId from "@/utils/getUserId";
+import Tracker from "@/Tracker";
+import parsePosition from "@/utils/parseLocation";
+import getWindowInfo from "@/utils/getWindowInfo";
 
 export default function Home() {
   useEffect(() => {
-    // below makes a new exp id each refresh
-    // const userId = Math.random().toString(36).substring(2, 15);
-
-    // below makes a new exp id every 5 min
     const userId = getUserId();
     
-    async function init() {
-      // below gets info
-      const parser = Bowser.getParser(window.navigator.userAgent)
-      const browser        = parser.getBrowserName().toLowerCase();
-      const browserVersion = parser.getBrowserVersion();
-      const os             = parser.getOSName().toLowerCase();
-      const engine         = parser.getEngineName().toLowerCase();
-      const platformType   = parser.getPlatformType().toLowerCase();
-
-      // below gets location
-      var location: string;
-      async function setAttributesInit(location: string) {
-        growthbook.setAttributes({
-          id: userId,
-          browser: browser,
-          browserVersion: browserVersion,
-          os: os,
-          engine: engine,
-          deviceType: platformType,
-          location: location,
-          pageLoadTime: Date.now()
-        });
-        await growthbook.init({
-          streaming: true,
-        }); 
-      }
-      function parseLocation(position: GeolocationPosition) {
-        location = position.coords.latitude + "," + position.coords.longitude;
-        setAttributesInit(location)
-      }
-      function parseError(error: GeolocationPositionError) {
+    const parser = Bowser.getParser(window.navigator.userAgent);
+    const windowInfo = getWindowInfo(parser);
+    
+    var location: string;
+    const geo = navigator.geolocation;
+    geo.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        location = parsePosition(position);
+        initAttributes(location);
+      }, 
+      (error: GeolocationPositionError) => {
         switch(error.code) {
           case error.PERMISSION_DENIED:
             location = "denied"
@@ -61,28 +39,32 @@ export default function Home() {
             location = "error";
             break;
         }
-        setAttributesInit(location)
+        initAttributes(location);
       }
-      navigator.geolocation.getCurrentPosition(parseLocation, parseError);
-    }
-    init();
+    );
 
-    // below tracks experiment viewed when leaving the page
-    const handleBeforeUnload = () => {
-      const timeSpentOnPage = (Date.now() - growthbook.getAttributes().pageLoadTime) / 1000; console.log("Time spent on page:", timeSpentOnPage);
-
-      growthbook.setAttributes({ 
-        timeSpentOnPage: timeSpentOnPage.toString()
+    async function initAttributes(location: string) {
+      growthbook.setAttributes({
+        id: userId,
+        browser: windowInfo.browser,
+        browserVersion: windowInfo.browserVersion,
+        os: windowInfo.os,
+        engine: windowInfo.engine,
+        deviceType: windowInfo.platformType,
+        location: location,
+        pageLoadTime: Date.now()
       });
+      await growthbook.init({
+        streaming: true,
+      }); 
+    }
 
-      async function update() {
-        const attributes = growthbook.getAttributes();
-        const data = {
-          timeSpentOnPage: attributes.timeSpentOnPage
-        } 
-        await axios.put(`/api/record/${userId}`, data)      
-      }
-      update()
+    const handleBeforeUnload = async () => {
+      const attributes = growthbook.getAttributes();
+      const sessionLength = (Date.now() - attributes.pageLoadTime) / 1000; 
+
+      growthbook.setAttributes({ sessionLength: sessionLength.toString() });    
+      await Tracker.trackSessionLength(userId, sessionLength);
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -94,7 +76,7 @@ export default function Home() {
   return (
     <GrowthBookProvider growthbook={growthbook}>
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <TestComponent />
+        <ExperimentPage />
       </main>
     </GrowthBookProvider>
   );

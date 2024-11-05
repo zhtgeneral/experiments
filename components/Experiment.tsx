@@ -3,8 +3,8 @@
 import { useFeature } from "@growthbook/growthbook-react";
 import React, { useEffect, useState } from "react";
 
-const TestComponent = () => {
-  const [loaded, setLoaded] = useState(false);
+const ExperimentPage = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const featureA = useFeature("test-name-a");
   const featureB = useFeature("test-feature-b");
@@ -13,13 +13,17 @@ const TestComponent = () => {
   
   // prevents filckering values on front end
   useEffect(() => {
-    if (featureA.source) setLoaded(true)
+    if (featureA.source) {
+      setIsLoaded(true);
+    }
   }, [featureA]);
 
-  if (!loaded) return null; 
+  if (!isLoaded) {
+    return null; 
+  }
   return (
     <div>
-      test
+      Test Web page
       <div>
         {featureA.experiment?.name}
       </div>
@@ -32,6 +36,6 @@ const TestComponent = () => {
     </div>
   )
 }
-export default TestComponent
+export default ExperimentPage;
 
 
