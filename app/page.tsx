@@ -14,9 +14,7 @@ export default function Home() {
   
   return (
     <GrowthBookProvider growthbook={growthbook}>
-      <body className='w-full h-full'>
-        <ExperimentPage />
-      </body>
+      <ExperimentPage />
     </GrowthBookProvider>
   );
 }
