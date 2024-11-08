@@ -4,18 +4,27 @@ import { useEffect } from "react";
 
 /**
  * This function is called to handle tracking the session length.
+ * 
  * It sets callback to update the session length when the user leaves closes the window.
+ * 
  * It closes the growthbook instance.
  */
 function HandleTrackSessionLength() {
   return useEffect(() => {
+    /** 
+     * THIS GETS CALLED TOO LATE.
+     * THE APP REQUEST FOR THE ID, FINDS THAT IT IS MISSING, AND CONTINUES AS IF
+     * NO ID WAS SET
+     * SO ID NEEDS TO BE SET EARLIER, OR THE APP NEEDS TO POLL FOR UPDATED ON ID.
+     * */
+    growthbook.setAttributes({
+      id: 888888
+    })
     growthbook.init({
       streaming: true,
     });  
-    growthbook.setAttributes({
-      id: 123456,
-    })
-  
+    console.log("all attributes: " + JSON.stringify(growthbook.getAttributes(), null, 2));
+    
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
@@ -31,7 +40,5 @@ export default HandleTrackSessionLength;
 async function handleBeforeUnload() {
   const attributes = growthbook.getAttributes();
   const sessionLength = (Date.now() - attributes.pageLoadTime) / 1000;
-  console.log("Time start: " + attributes.pageLoadTime);
-  const recordId = attributes.recordId;
-  await Tracker.trackSessionLength(recordId, sessionLength);
+  await Tracker.trackSessionLength(sessionLength);
 };

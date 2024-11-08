@@ -1,5 +1,12 @@
 import parsePosition from "@/utils/parseLocation";
 
+/**
+ * This function prompts the user to yield their precise geolocation.
+ * 
+ * The geolocation is formatted as "lat,long".
+ * 
+ * It handles rejected cases correctly.
+ */
 export default function getLocation(): Promise<string> {
   return new Promise((resolve, _reject) => {
     var location = "";
@@ -7,7 +14,7 @@ export default function getLocation(): Promise<string> {
     geo.getCurrentPosition(
       (position: GeolocationPosition) => {
         location = parsePosition(position);
-        console.log("updated location: " + location);
+        // console.log("updated location: " + location);
         resolve(location);
       }, 
       (error: GeolocationPositionError) => {     
@@ -25,7 +32,7 @@ export default function getLocation(): Promise<string> {
             location = "error";
             break;
           }
-        console.log("error location: " + location);
+        // console.log("error location: " + location);
         resolve(location);
         }
     );

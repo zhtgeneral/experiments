@@ -18,10 +18,13 @@ export default class Tracker {
     const data: RecordData = await Tracker.formatData(experimentKey, resultKey);
     const response = await axios.post('/api/record', data);
     const record = response.data;
+    const existingAttributes = growthbook.getAttributes();
     growthbook.setAttributes({
+      ...existingAttributes,
       recordId: record.id,
       pageLoadTime: Date.now()
     });      
+    console.log("all attributes: " + JSON.stringify(growthbook.getAttributes(), null, 2));
     console.log("output record: " + JSON.stringify(record, null, 2));
     return record.data as unknown as Record;
   }
@@ -31,10 +34,12 @@ export default class Tracker {
    * @param recordId The id of the record stored on `growthbook` attributes
    * @param sessionLength The session length from `growthbook` attributes
    */
-  public static async trackSessionLength(recordId: string, sessionLength: number) {    
+  public static async trackSessionLength(sessionLength: number) {    
     const data = {
       sessionLength: sessionLength.toString()
     } 
+    const attributes = growthbook.getAttributes();
+    const recordId = attributes.recordId;
     const response = await axios.put(`/api/record/${recordId}`, data);
     console.log("updated record: " + JSON.stringify(response.data, null, 2));
   }

@@ -1,8 +1,10 @@
 'use client'
 
 import { useFeature } from "@growthbook/growthbook-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FeatureImage from "@/components/FeatureImage";
+import growthbook from "@/lib/growthbook";
+
 
 /**
  * This component is the main page for the experiments.
@@ -12,7 +14,19 @@ import FeatureImage from "@/components/FeatureImage";
  * It displays the body that renders the image depending on the experiment value
  */
 const ExperimentPage = () => {
+  // const [isLoaded, setIsLoaded] = useState(false);
+  // useEffect(() => {
+  //   const attributes = growthbook.getAttributes();
+  //   if (attributes.id) {
+  //     setIsLoaded(true);
+  //   }
+  // }, [growthbook])
+  // if (!isLoaded) {
+  //   return null
+  // }
+
   const feature = useFeature("test-name-a"); // another feature is "test-feature-b"
+  console.log("gb id: " + JSON.stringify(growthbook.getAttributes(), null, 2));
 
   return (
     <div className="w-full bg-background-light h-screen flex flex-col">
