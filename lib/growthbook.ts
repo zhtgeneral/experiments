@@ -6,7 +6,7 @@ const growthbook = new GrowthBook({
   clientKey: process.env.NEXT_PUBLIC_GROWTHBOOK_CLIENT_KEY,
   enableDevMode: true,
   trackingCallback: async (experiment, result) => {
-    const record = await Tracker.createRecord(experiment.key, result.key);    
+    await Tracker.createRecord(experiment.key, result.key);    
   },
 });
 export default growthbook;

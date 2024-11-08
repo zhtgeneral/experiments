@@ -12,7 +12,7 @@ import { HttpStatusCode } from "axios";
  * If there is no existing tracking record, return a `404` response for `Not Found`.
  * 
  * Otherwise it updates the existing record in the database 
- * and returns a `201` response for `OK`
+ * and returns a `200` response for `OK`
  * then return the response as an object.
  * 
  * On duplicate exising records, it takes the record most recently created.

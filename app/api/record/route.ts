@@ -24,7 +24,6 @@ export async function POST(request: NextRequest) {
     })  
     return NextResponse.json(newRecord, { status: HttpStatusCode.Created })
   } catch (error: any) {
-    console.log('error: ' )
     return NextResponse.json(error.message, { status: HttpStatusCode.InternalServerError });
   }
 }
