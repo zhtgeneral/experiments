@@ -10,8 +10,7 @@ import HandleTrackSessionLength from "@/hooks/handleSessionLength";
  * It handles tracking session length and renders the images depending on the experiments.
  */
 export default function Home() {
-  HandleTrackSessionLength() ;
-  
+  HandleTrackSessionLength();
   return (
     <GrowthBookProvider growthbook={growthbook}>
       <ExperimentPage />

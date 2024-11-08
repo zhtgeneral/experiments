@@ -6,6 +6,16 @@ import parsePosition from "@/utils/parseLocation";
 import Bowser from "bowser";
 import { useEffect } from "react";
 
+/**
+ * This function is called to handle tracking the session length.
+ * 
+ * It asks for the user's location. It handles it according whether the user
+ * accepts or rejects location.
+ * 
+ * It gets data about the user's operating system.
+ * 
+ * It sets callback to update the session length when the user leaves closes the window.
+ */
 const HandleTrackSessionLength = () => {
   return useEffect(() => {
     const userId = getUserId();

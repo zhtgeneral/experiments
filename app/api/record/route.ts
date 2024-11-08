@@ -8,9 +8,6 @@ import { HttpStatusCode } from "axios";
  * It checks that `id` exists on the body of the request.
  * If not, throw a `400` response for `Bad request`.
  * 
- * Otherwise it checks the database for an existing record.
- * If there is an existing record, return a `100` response for `Continue`
- * 
  * Otherwise it creates a new record in the database 
  * and returns a `201` response for `Created`
  * then return the response as an object.
@@ -26,17 +23,6 @@ export async function POST(request: NextRequest) {
     if (!body.id) {
       return new NextResponse("Bad request", { status: HttpStatusCode.BadRequest });
     }
-    const oldRecord = await prisma.record.findFirst({
-      where: {
-        id: body.id
-      }
-    })
-    if (oldRecord) {
-      return NextResponse.json({ error: 'Record already exists and will be skipped' }, 
-        { status: HttpStatusCode.Continue }
-      )
-    }
-    
     const newRecord = await prisma.record.create({
       data: {
         ...body
@@ -44,8 +30,9 @@ export async function POST(request: NextRequest) {
     })  
     return NextResponse.json(newRecord, { status: HttpStatusCode.Created })
   } catch (error: any) {
-    // return NextResponse.json("Internal Server Error", { status: 500 });
+    console.log('error: ' )
     return NextResponse.json(error.message, { status: HttpStatusCode.InternalServerError });
+
   }
 }
 
