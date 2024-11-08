@@ -7,6 +7,11 @@ interface ExperimentImageProps {
   feature: FeatureResult
 }
 
+/**
+ * This component renders the image depending on the value of the feature flag.
+ * 
+ * If the feature can't be loaded, it returns a skeleton with a hovering effect. 
+ */
 const FeatureImage: React.FC<ExperimentImageProps> = ({
   feature
 }) => {

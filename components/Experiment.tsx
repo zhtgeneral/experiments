@@ -4,6 +4,13 @@ import { useFeature } from "@growthbook/growthbook-react";
 import React from "react";
 import FeatureImage from "@/components/FeatureImage";
 
+/**
+ * This component is the main page for the experiments.
+ * 
+ * It displays the header.
+ * 
+ * It displays the body that renders the image depending on the experiment value
+ */
 const ExperimentPage = () => {
   const feature = useFeature("test-name-a"); // another feature is "test-feature-b"
 
