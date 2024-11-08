@@ -24,16 +24,16 @@ import { HttpStatusCode } from "axios";
  */
 export async function PUT(
   req: NextRequest, 
-  { params }: { params: { id: string } }
+  { params }: { params: { recordId: string } }
 ) {
   try {
     const body = await req.json();
-    if (!body.sessionLength || !params.id) {
+    if (!body.sessionLength || !params.recordId) {
       return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
     }    
     const existingRecord = await prisma.record.findFirst({
       where: {
-        id: params.id
+        id: params.recordId
       },
       orderBy: [
         {

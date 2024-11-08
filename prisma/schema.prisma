@@ -1,12 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"] // should work for prod. Normally rhel-openssl-3.0.x is used in dev
+  binaryTargets = ["native", "rhel-openssl-3.0.x"] // should work for prod. Normally rhel-openssl-3.0.x is used in dev
 }
 
 datasource db {
@@ -15,7 +9,7 @@ datasource db {
 }
 
 model Record {
-  id              String    @id 
+  id              String    @id @default(uuid())
   experimentId    String    @db.VarChar(20)
   variationId     String    @db.VarChar(20)
   weekday         String    @db.VarChar(3)
