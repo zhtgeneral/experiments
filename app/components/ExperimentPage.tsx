@@ -1,7 +1,7 @@
 'use client'
 
-import { useFeature, useGrowthBook } from "@growthbook/growthbook-react";
-import React from "react";
+import { useFeature, useFeatureIsOn, useGrowthBook } from "@growthbook/growthbook-react";
+import React, { useEffect } from "react";
 import FeatureImage from "@/app/components/FeatureImage";
 
 /**
@@ -14,14 +14,15 @@ import FeatureImage from "@/app/components/FeatureImage";
  */
 const ExperimentPage = () => {
   const growthbook = useGrowthBook();
-  // console.log("gb from react: " + JSON.stringify(growthbook, null, 2));
-  // console.log("is feature on: " + JSON.stringify(growthbook.getFeatures(), null, 2));
-  // const test = growthbook.isOn("test-name-a");
-  // console.log("test: " + JSON.stringify(test, null, 2));
+  // growthbook.setAttributes({
+  //   id: "asdjfhgasdkjhg"
+  // })    
+  console.log("child is growthbook ready: " + growthbook.ready);
+  console.log("child is on:" + useFeatureIsOn("test-name-a"));
+  // console.log("is feature on: " + JSON.stringify(growthbook.evalFeature("test-name-a"), null, 2));
 
-  const feature = useFeature("test-name-a"); // another feature is "test-feature-b"
-  console.log("gb id: " + JSON.stringify(growthbook.getAttributes(), null, 2));
-  console.log("feature: " + JSON.stringify(feature, null, 2));
+  const feature = useFeature("test-name-a"); 
+  // console.log("feature: " + JSON.stringify(feature, null, 2));  
 
   return (
     <div className="w-full bg-background-light h-screen flex flex-col">
@@ -34,12 +35,12 @@ const ExperimentPage = () => {
         <div className="w-full mx-6 lg:mx-0 lg:w-[70%] bg-gradient-to-b from-foreground-start to-foreground-end rounded-t-3xl">
           <div className='mx-6 mt-6 mb-4 font-medium text-xl'>
             {feature.on 
-              ? `Your experiment version: ${feature.value? "Feature A" : "Feature B"}`
+              ? `Your experiment version: ${(feature.value)? "Feature A" : "Feature B"}`
               : "Experiments not active" 
             }
           </div>          
           <div className='mx-6 mb-6'>
-            <FeatureImage feature={feature} />
+            <FeatureImage isOn={feature.on} value={feature.value} />
           </div>
         </div>
       </main>

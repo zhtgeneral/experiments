@@ -4,6 +4,7 @@ import enableTracking from "@/hooks/handleSessionLength";
 import growthbook from "@/lib/growthbook";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
 import { useEffect, useState } from "react";
+import ExperimentPage from "./ExperimentPage";
 
 interface GrowthbookContainerProps {
   children?: React.ReactNode
@@ -19,16 +20,18 @@ const GrowthbookContainer: React.FC<GrowthbookContainerProps> = ({
   children
 }) => {
   const [isGrowthbookLoaded, setIsGrowthbookLoaded] = useState(false);
-  useEffect(() => {
-    growthbook.setAttributes({
-      id: "qweriouy"
-    })
+  useEffect(() => {    
     growthbook.init({
-      streaming: true,
+      streaming: true
     }).then(() => {
+      growthbook.setAttributes({
+        id: "asdjfhgasdkjhg"
+      })    
       enableTracking();
       setIsGrowthbookLoaded(true);
-    })      
+      console.log("is gb on: " + growthbook.ready);
+      console.log("is feature on: " + JSON.stringify(growthbook.evalFeature("test-name-a"), null, 2));
+    })
   }, [])
 
   if (!isGrowthbookLoaded) {

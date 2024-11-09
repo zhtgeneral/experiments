@@ -4,20 +4,23 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { FeatureResult } from '@growthbook/growthbook';
 
 interface ExperimentImageProps {
-  feature: FeatureResult
+  isOn: boolean,
+  value: boolean
 }
 
 /**
  * This component renders the image depending on the value of the feature flag.
  * 
  * If the feature can't be loaded, it returns a skeleton with a hovering effect. 
+ * @requires feature.value is a boolean
  */
 const FeatureImage: React.FC<ExperimentImageProps> = ({
-  feature
+  isOn,
+  value
 }) => {
   let featureImage = <Skeleton className="h-60 w-full lg:h-[540px] rounded-xl" />;
-  if (feature.on) {
-    if (feature.value) {
+  if (isOn) {
+    if (value) {
       featureImage = <Image 
         src="/mountains.webp" 
         alt="Picture A" 
