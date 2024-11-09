@@ -1,31 +1,18 @@
 'use client'
 
 import ExperimentPage from "@/components/ExperimentPage";
-import growthbook from "@/lib/growthbook";
-import { GrowthBookProvider } from "@growthbook/growthbook-react";
-import HandleTrackSessionLength from "@/hooks/handleSessionLength";
-import { useEffect, useState } from "react";
-import handleTrackSessionLength from "@/hooks/handleSessionLength";
+import GrowthbookContainer from "@/app/components/GrowthbookContainer";
 
 /**
  * This is main page.
- * It handles tracking session length and renders the images depending on the experiments.
+ * 
+ * It ensures that growthbook in intialized before rendering the experiment page
  */
 export default function Home() {  
-  const [isGrowthbookLoaded, setIsGrowthbookLoaded] = useState(false);
-  useEffect(() => {
-    handleTrackSessionLength().then(() => {
-      setIsGrowthbookLoaded(true);
-    })
-  }, [])
-  if (!isGrowthbookLoaded) {
-    return null;
-  }
-  HandleTrackSessionLength();
   return (
-    <GrowthBookProvider growthbook={growthbook}>
+    <GrowthbookContainer>
       <ExperimentPage />
-    </GrowthBookProvider>
+    </GrowthbookContainer>
   );
 }
 
