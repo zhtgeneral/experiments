@@ -1,7 +1,7 @@
 'use client'
 
 import { useFeature } from "@growthbook/growthbook-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import FeatureImage from "@/components/FeatureImage";
 import growthbook from "@/lib/growthbook";
 
@@ -12,19 +12,9 @@ import growthbook from "@/lib/growthbook";
  * It displays the header.
  * 
  * It displays the body that renders the image depending on the experiment value
+ * @requires growthbook needs to be init before this component gets mounted
  */
 const ExperimentPage = () => {
-  // const [isLoaded, setIsLoaded] = useState(false);
-  // useEffect(() => {
-  //   const attributes = growthbook.getAttributes();
-  //   if (attributes.id) {
-  //     setIsLoaded(true);
-  //   }
-  // }, [growthbook])
-  // if (!isLoaded) {
-  //   return null
-  // }
-
   const feature = useFeature("test-name-a"); // another feature is "test-feature-b"
   console.log("gb id: " + JSON.stringify(growthbook.getAttributes(), null, 2));
 
