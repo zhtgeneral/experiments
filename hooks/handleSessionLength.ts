@@ -39,6 +39,15 @@ export default HandleTrackSessionLength;
  */
 async function handleBeforeUnload() {
   const attributes = growthbook.getAttributes();
-  const sessionLength = (Date.now() - attributes.pageLoadTime) / 1000;
+  const prevTime = attributes.pageLoadTime;
+  const sessionLength = getSessionLength(prevTime);
   await Tracker.trackSessionLength(sessionLength);
 };
+
+/**
+ * This helper function gets the sesion length using the time the page was loaded
+ */
+function getSessionLength(prevTime: number): number {
+  const sessionLength = (Date.now() - prevTime) / 1000;
+  return sessionLength;
+}
