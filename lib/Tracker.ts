@@ -24,7 +24,7 @@ export default class Tracker {
       recordId: record.id,
       pageLoadTime: Date.now()
     });      
-    console.log("all attributes: " + JSON.stringify(growthbook.getAttributes(), null, 2));
+    // console.log("all attributes: " + JSON.stringify(growthbook.getAttributes(), null, 2));
     console.log("output record: " + JSON.stringify(record, null, 2));
     return record.data as unknown as Record;
   }

@@ -1,29 +1,21 @@
 import growthbook from "@/lib/growthbook";
 import Tracker from "@/lib/Tracker";
+import { useGrowthBook } from "@growthbook/growthbook-react";
 
 /**
- * This function is called to handle tracking the session length.
- * 
- * It sets callback to update the session length when the user closes the window.
+ * This function makes sure session length is tracked when window is unloaded
  */
-async function handleTrackSessionLength() {
-  await growthbook.init({
-    streaming: true,
-  });  
-  growthbook.setAttributes({
-    id: 888888
-  })
-  window.addEventListener('beforeunload', handleBeforeUnload);
+function enableTracking() {
+  window.addEventListener('beforeunload', handleSessionLength);
 }
-export default handleTrackSessionLength;
+export default enableTracking;
 
 /**
- * This function sets the sessionLength, updates the tracker, 
- * and handles cleanup when the user leaves the page.
+ * This function sets the sessionLength in the tracker and 
  * 
  * @requires growthbook instance needs to have the `pageLoadTime` and `recordId` attribute set
  */
-async function handleBeforeUnload() {
+async function handleSessionLength() {
   const attributes = growthbook.getAttributes();
   const sessionLength = getSessionLength(attributes.pageLoadTime);
   await Tracker.trackSessionLength(sessionLength);
@@ -43,6 +35,6 @@ function getSessionLength(pageLoadTime: number): number {
  * and destroys the growthbook instance
  */
 function handleCleanup() {
-  window.removeEventListener('beforeunload', handleBeforeUnload);
+  window.removeEventListener('beforeunload', handleSessionLength);
   growthbook.destroy();
 }

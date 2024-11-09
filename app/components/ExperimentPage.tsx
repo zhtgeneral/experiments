@@ -1,10 +1,8 @@
 'use client'
 
-import { useFeature } from "@growthbook/growthbook-react";
+import { useFeature, useGrowthBook } from "@growthbook/growthbook-react";
 import React from "react";
-import FeatureImage from "@/components/FeatureImage";
-import growthbook from "@/lib/growthbook";
-
+import FeatureImage from "@/app/components/FeatureImage";
 
 /**
  * This component is the main page for the experiments.
@@ -15,8 +13,15 @@ import growthbook from "@/lib/growthbook";
  * @requires growthbook needs to be init before this component gets mounted
  */
 const ExperimentPage = () => {
+  const growthbook = useGrowthBook();
+  // console.log("gb from react: " + JSON.stringify(growthbook, null, 2));
+  // console.log("is feature on: " + JSON.stringify(growthbook.getFeatures(), null, 2));
+  // const test = growthbook.isOn("test-name-a");
+  // console.log("test: " + JSON.stringify(test, null, 2));
+
   const feature = useFeature("test-name-a"); // another feature is "test-feature-b"
   console.log("gb id: " + JSON.stringify(growthbook.getAttributes(), null, 2));
+  console.log("feature: " + JSON.stringify(feature, null, 2));
 
   return (
     <div className="w-full bg-background-light h-screen flex flex-col">

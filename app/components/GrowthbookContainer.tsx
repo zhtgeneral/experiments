@@ -1,6 +1,6 @@
 'use client'
 
-import handleTrackSessionLength from "@/hooks/handleSessionLength";
+import enableTracking from "@/hooks/handleSessionLength";
 import growthbook from "@/lib/growthbook";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
 import { useEffect, useState } from "react";
@@ -10,19 +10,27 @@ interface GrowthbookContainerProps {
 }
 
 /**
- * This component ensures growthbook init and tracking session length is handled
- * before rendering any child components
- * @requires growthbook needs to be 
+ * This component ensures growthbook is initialized 
+ * and that tracking is enabled before rendering any child components.
+ * 
+ * Then it allows children components to access growthbook
  */
 const GrowthbookContainer: React.FC<GrowthbookContainerProps> = ({
   children
 }) => {
   const [isGrowthbookLoaded, setIsGrowthbookLoaded] = useState(false);
   useEffect(() => {
-    handleTrackSessionLength().then(() => {
-      setIsGrowthbookLoaded(true);
+    growthbook.setAttributes({
+      id: "qweriouy"
     })
+    growthbook.init({
+      streaming: true,
+    }).then(() => {
+      enableTracking();
+      setIsGrowthbookLoaded(true);
+    })      
   }, [])
+
   if (!isGrowthbookLoaded) {
     return null;
   }
@@ -32,4 +40,4 @@ const GrowthbookContainer: React.FC<GrowthbookContainerProps> = ({
     </GrowthBookProvider>
   )
 }
-export default GrowthbookContainer
+export default GrowthbookContainer;
