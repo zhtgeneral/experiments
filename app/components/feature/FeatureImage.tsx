@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FeatureResult } from '@growthbook/growthbook';
 
-interface ExperimentImageProps {
+interface FeatureImageProps {
   isOn: boolean,
   value: boolean
 }
@@ -14,7 +14,7 @@ interface ExperimentImageProps {
  * If the feature can't be loaded, it returns a skeleton with a hovering effect. 
  * @requires feature.value is a boolean
  */
-const FeatureImage: React.FC<ExperimentImageProps> = ({
+const FeatureImage: React.FC<FeatureImageProps> = ({
   isOn,
   value
 }) => {
@@ -22,7 +22,7 @@ const FeatureImage: React.FC<ExperimentImageProps> = ({
   if (isOn) {
     if (value) {
       featureImage = <Image 
-        src="/mountains.webp" 
+        src="/city.jpg" 
         alt="Picture A" 
         width={1960}
         height={1080}
@@ -31,7 +31,7 @@ const FeatureImage: React.FC<ExperimentImageProps> = ({
       />
     } else {
       featureImage =  <Image 
-        src="/sunset.webp" 
+        src="/trees.jpg" 
         alt="Picture B" 
         width={1960}
         height={1080}
