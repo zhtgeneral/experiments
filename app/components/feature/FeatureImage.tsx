@@ -22,19 +22,19 @@ const FeatureImage: React.FC<FeatureImageProps> = ({
   if (isOn) {
     if (value) {
       featureImage = <Image 
-        src="/city.jpg" 
+        src="/mountain_lake.jpeg" 
         alt="Picture A" 
-        width={1960}
-        height={1080}
+        width={3000}
+        height={2000}
         priority
         className="object-cover w-full rounded-xl"
       />
     } else {
       featureImage =  <Image 
-        src="/trees.jpg" 
+        src="/underwater_city.jpeg" 
         alt="Picture B" 
-        width={1960}
-        height={1080}
+        width={3000}
+        height={2000}
         priority
         className="object-cover w-full rounded-xl"
       />
