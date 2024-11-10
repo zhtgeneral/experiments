@@ -14,7 +14,6 @@ export default function getLocation(): Promise<string> {
     geo.getCurrentPosition(
       (position: GeolocationPosition) => {
         location = parsePosition(position);
-        // console.log("updated location: " + location);
         resolve(location);
       }, 
       (error: GeolocationPositionError) => {     
@@ -32,7 +31,6 @@ export default function getLocation(): Promise<string> {
             location = "error";
             break;
           }
-        // console.log("error location: " + location);
         resolve(location);
         }
     );
