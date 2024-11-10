@@ -12,7 +12,7 @@ import { HttpStatusCode } from "axios";
  * If there is no existing tracking record, return a `404` response for `Not Found`.
  * 
  * Otherwise it updates the existing record in the database 
- * and returns a `201` response for `OK`
+ * and returns a `200` response for `OK`
  * then return the response as an object.
  * 
  * On duplicate exising records, it takes the record most recently created.
@@ -24,16 +24,16 @@ import { HttpStatusCode } from "axios";
  */
 export async function PUT(
   req: NextRequest, 
-  { params }: { params: { id: string } }
+  { params }: { params: { recordId: string } }
 ) {
   try {
     const body = await req.json();
-    if (!body.sessionLength || !params.id) {
+    if (!body.sessionLength || !params.recordId) {
       return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
     }    
     const existingRecord = await prisma.record.findFirst({
       where: {
-        id: params.id
+        id: params.recordId
       },
       orderBy: [
         {
