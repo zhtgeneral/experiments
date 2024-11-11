@@ -27,10 +27,10 @@ export async function POST(
   { params }: { params: { recordId: string } }
 ) {
   try {
-    const body = await req.json();
-    // if (!body.sessionLength || !params.recordId) {
-    //   return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
-    // }    
+    const sessionLength = await req.json();
+    if (!sessionLength || !params.recordId) {
+      return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
+    }    
     const existingRecord = await prisma.record.findFirst({
       where: {
         id: params.recordId
@@ -49,7 +49,7 @@ export async function POST(
         id: existingRecord.id
       },
       data: {
-        sessionLength: body.toString()
+        sessionLength: sessionLength.toString()
       }
     })
     return NextResponse.json(updatedRecord, { status: HttpStatusCode.Ok })
