@@ -21,8 +21,8 @@ const ExperimentPage = () => {
     <div className="w-full bg-background-light h-screen flex flex-col">
       <Nav />
       <main className="flex flex-1 justify-center pt-4">
-        <div className="w-full mx-4 lg:mx-0 lg:w-[70%] bg-gradient-to-b from-foreground-start to-foreground-end rounded-t-3xl">
-          <div className='mx-4 mt-4 mb-4 font-medium text-xl'>
+        <div className="w-full mx-4 lg:mx-0 lg:w-[70%] bg-gradient-to-b from-foreground-start to-foreground-end rounded-t-xl lg:rounded-t-3xl">
+          <div className='mx-4 mt-4 mb-4 font-medium text-lg lg:text-xl'>
             <FeatureHeader isOn={growthbook.ready} value={feature.value} />
           </div>          
           <div className='mx-4 mb-4'>

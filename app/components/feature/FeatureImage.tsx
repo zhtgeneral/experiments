@@ -27,7 +27,7 @@ const FeatureImage: React.FC<FeatureImageProps> = ({
         width={3000}
         height={2000}
         priority
-        className="object-cover w-full rounded-xl"
+        className="object-cover w-full rounded-lg lg:rounded-xl"
       />
     } else {
       featureImage =  <Image 
@@ -36,7 +36,7 @@ const FeatureImage: React.FC<FeatureImageProps> = ({
         width={3000}
         height={2000}
         priority
-        className="object-cover w-full rounded-xl"
+        className="object-cover w-full rounded-lg lg:rounded-xl"
       />
     }
   } 
