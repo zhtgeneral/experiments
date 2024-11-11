@@ -24,6 +24,7 @@ model Record {
   os              String    @db.VarChar(20)
   engine          String    @db.VarChar(20)
   platformType    String    @db.VarChar(20)
+  bandwidth       String    @db.VarChar(20)
   location        String    @db.VarChar(30)
   sessionLength   String?   @db.VarChar(20) 
 }

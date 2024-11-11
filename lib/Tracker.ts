@@ -7,6 +7,7 @@ import getWindowInfo from "@/utils/getWindowInfo";
 import destructureDate from "@/utils/destructureDate";
 import growthbook from "@/lib/growthbook";
 import addAttribute from "@/utils/addAttribute";
+import { networkInterfaces } from "os";
 
 export default class Tracker {
   /**
@@ -60,6 +61,7 @@ export default class Tracker {
     const parser = Bowser.getParser(window.navigator.userAgent);
     const windowInfo = getWindowInfo(parser);
 
+    const bandwidth = Tracker.getDeviceBandwidth();
     const data: RecordData = {
       experimentId: experimentKey,
       variationId: resultKey,
@@ -75,9 +77,14 @@ export default class Tracker {
       os: windowInfo.os,
       engine: windowInfo.engine,
       platformType: windowInfo.platformType,
+      bandwidth: bandwidth,
       location: location,
       sessionLength: null
     }
     return data;
+  }
+
+  private static getDeviceBandwidth() {
+    return navigator.connection?.effectiveType || "not set"
   }
 }
