@@ -16,14 +16,13 @@ export default class Tracker {
    * @param recordId The id of the record stored on `growthbook` attributes
    * @param sessionLength The session length from `growthbook` attributes
    */
-  public static async createRecord(experimentKey: string, resultKey: string): Promise<Record | null> {
-    addAttribute({
-      pageLoadTime: Date.now() 
-    })
+  public static async createRecord(experimentKey: string, resultKey: string): Promise<Record | null> {  
+    const recordCreateTime = Date.now();  
     const data: RecordData = await Tracker.formatData(experimentKey, resultKey);
     const response = await axios.post('/api/record', data);
     const record = response.data;
     addAttribute({
+      pageLoadTime: recordCreateTime,
       recordId: record.id
     })
     return record as unknown as Record;
@@ -56,7 +55,7 @@ export default class Tracker {
     const date = new Date();
     const destructuredDate = destructureDate(date);
 
-    const location = await getLocation();
+    const location = getLocation();
 
     const parser = Bowser.getParser(window.navigator.userAgent);
     const windowInfo = getWindowInfo(parser);
@@ -87,4 +86,4 @@ export default class Tracker {
   private static getDeviceBandwidth() {
     return navigator.connection?.effectiveType || "not set"
   }
-}
+}  

@@ -3,7 +3,7 @@
 import enableTracking from "@/hooks/handleSessionLength";
 import growthbook from "@/lib/growthbook";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface TrackingContainerProps {
   children?: React.ReactNode
@@ -19,7 +19,7 @@ interface TrackingContainerProps {
  */
 const TrackingContainer: React.FC<TrackingContainerProps> = ({
   children
-}) => {
+}) => {  
   useEffect(() => {
     growthbook.setAttributes({
       id: Math.random()
@@ -29,7 +29,6 @@ const TrackingContainer: React.FC<TrackingContainerProps> = ({
     })
     enableTracking();
   })
-  
   return (
     <GrowthBookProvider growthbook={growthbook}>
       {children}
