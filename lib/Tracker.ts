@@ -18,7 +18,7 @@ export default class Tracker {
    */
   public static async createRecord(experimentKey: string, resultKey: string): Promise<Record | null> {  
     const recordCreateTime = Date.now();  
-    const data: RecordData = await Tracker.formatData(experimentKey, resultKey);
+    const data: RecordData = Tracker.formatData(experimentKey, resultKey);
     const response = await axios.post('/api/record', data);
     const record = response.data;
     addAttribute({
@@ -51,7 +51,7 @@ export default class Tracker {
    * @param experimentKey The experiment key from growthbook
    * @param resultKey The result key from growthbook   
    */
-  private static async formatData(experimentKey: string, resultKey: string): Promise<RecordData> {
+  private static formatData(experimentKey: string, resultKey: string): RecordData {
     const date = new Date();
     const destructuredDate = destructureDate(date);
 
