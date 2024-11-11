@@ -6,6 +6,7 @@ import Bowser from "bowser";
 import getWindowInfo from "@/utils/getWindowInfo";
 import destructureDate from "@/utils/destructureDate";
 import growthbook from "@/lib/growthbook";
+import addAttribute from "@/utils/addAttribute";
 
 export default class Tracker {
   /**
@@ -15,16 +16,16 @@ export default class Tracker {
    * @param sessionLength The session length from `growthbook` attributes
    */
   public static async createRecord(experimentKey: string, resultKey: string): Promise<Record | null> {
+    addAttribute({
+      pageLoadTime: Date.now() 
+    })
     const data: RecordData = await Tracker.formatData(experimentKey, resultKey);
     const response = await axios.post('/api/record', data);
     const record = response.data;
-    const existingAttributes = growthbook.getAttributes();
-    growthbook.setAttributes({
-      ...existingAttributes,
-      recordId: record.id,
-      pageLoadTime: Date.now()
-    });      
-    return record.data as unknown as Record;
+    addAttribute({
+      recordId: record.id
+    })
+    return record as unknown as Record;
   }
   /**
    * Fills in the session length for a tracking record
