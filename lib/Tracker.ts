@@ -30,18 +30,13 @@ export default class Tracker {
    * Fills in the session length for a tracking record
    * @requires TrackingRecord of the user has to be in the database
    * @param recordId The id of the record stored on `growthbook` attributes
-   * @param sessionLength The session length from `growthbook` attributes
+   * @param sessionLength The session length
    */
   public static async trackSessionLength(sessionLength: number) {   
-    const data = {
-      sessionLength: sessionLength.toString()
-    } 
     /** Sending Beacons do not work if trackers are blocked (for example uBlock origin on desktops) */
     if (navigator.sendBeacon) {
       const attributes = growthbook.getAttributes();
-      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-      const sent = navigator.sendBeacon(`/api/record/${attributes.recordId}`, blob);
-      console.log("navigator send beacon was sent: " + sent);
+      const sent = navigator.sendBeacon(`/api/record/${attributes.recordId}`, sessionLength.toString());
     } 
   }
   /**

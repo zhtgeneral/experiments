@@ -28,9 +28,9 @@ export async function POST(
 ) {
   try {
     const body = await req.json();
-    if (!body.sessionLength || !params.recordId) {
-      return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
-    }    
+    // if (!body.sessionLength || !params.recordId) {
+    //   return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
+    // }    
     const existingRecord = await prisma.record.findFirst({
       where: {
         id: params.recordId
@@ -49,7 +49,7 @@ export async function POST(
         id: existingRecord.id
       },
       data: {
-        sessionLength: body.sessionLength
+        sessionLength: body.toString()
       }
     })
     return NextResponse.json(updatedRecord, { status: HttpStatusCode.Ok })
