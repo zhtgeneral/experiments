@@ -32,14 +32,17 @@ export default class Tracker {
    * @param recordId The id of the record stored on `growthbook` attributes
    * @param sessionLength The session length from `growthbook` attributes
    */
-  public static async trackSessionLength(sessionLength: number) {    
+  public static async trackSessionLength(sessionLength: number) {   
     const data = {
       sessionLength: sessionLength.toString()
     } 
-    const attributes = growthbook.getAttributes();
-    const recordId = attributes.recordId;
-    const response = await axios.put(`/api/record/${recordId}`, data);
-    console.log("updated record: " + JSON.stringify(response.data, null, 2));
+    /** Sending Beacons do not work if trackers are blocked (for example uBlock origin on desktops) */
+    if (navigator.sendBeacon) {
+      const attributes = growthbook.getAttributes();
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const sent = navigator.sendBeacon(`/api/record/${attributes.recordId}`, blob);
+      console.log("navigator send beacon was sent: " + sent);
+    } 
   }
   /**
    * This function formats the data needed for a log.

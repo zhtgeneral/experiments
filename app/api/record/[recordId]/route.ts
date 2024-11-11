@@ -22,7 +22,7 @@ import { HttpStatusCode } from "axios";
  * 
  * @param request contains a body with the type `Record`
  */
-export async function PUT(
+export async function POST(
   req: NextRequest, 
   { params }: { params: { recordId: string } }
 ) {
