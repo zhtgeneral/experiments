@@ -3,7 +3,7 @@
 import enableTracking from "@/hooks/handleSessionLength";
 import growthbook from "@/lib/growthbook";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface TrackingContainerProps {
   children?: React.ReactNode
