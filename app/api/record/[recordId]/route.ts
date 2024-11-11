@@ -22,13 +22,13 @@ import { HttpStatusCode } from "axios";
  * 
  * @param request contains a body with the type `Record`
  */
-export async function PUT(
+export async function POST(
   req: NextRequest, 
   { params }: { params: { recordId: string } }
 ) {
   try {
-    const body = await req.json();
-    if (!body.sessionLength || !params.recordId) {
+    const sessionLength = await req.json();
+    if (!sessionLength || !params.recordId) {
       return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
     }    
     const existingRecord = await prisma.record.findFirst({
@@ -49,7 +49,7 @@ export async function PUT(
         id: existingRecord.id
       },
       data: {
-        sessionLength: body.sessionLength
+        sessionLength: sessionLength.toString()
       }
     })
     return NextResponse.json(updatedRecord, { status: HttpStatusCode.Ok })

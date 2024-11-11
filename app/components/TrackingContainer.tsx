@@ -19,7 +19,7 @@ interface TrackingContainerProps {
  */
 const TrackingContainer: React.FC<TrackingContainerProps> = ({
   children
-}) => {
+}) => {  
   useEffect(() => {
     growthbook.setAttributes({
       id: Math.random()
@@ -29,7 +29,6 @@ const TrackingContainer: React.FC<TrackingContainerProps> = ({
     })
     enableTracking();
   })
-  
   return (
     <GrowthBookProvider growthbook={growthbook}>
       {children}

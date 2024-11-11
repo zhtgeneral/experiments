@@ -6,6 +6,8 @@ import Bowser from "bowser";
 import getWindowInfo from "@/utils/getWindowInfo";
 import destructureDate from "@/utils/destructureDate";
 import growthbook from "@/lib/growthbook";
+import addAttribute from "@/utils/addAttribute";
+import { networkInterfaces } from "os";
 
 export default class Tracker {
   /**
@@ -14,32 +16,29 @@ export default class Tracker {
    * @param recordId The id of the record stored on `growthbook` attributes
    * @param sessionLength The session length from `growthbook` attributes
    */
-  public static async createRecord(experimentKey: string, resultKey: string): Promise<Record | null> {
-    const data: RecordData = await Tracker.formatData(experimentKey, resultKey);
+  public static async createRecord(experimentKey: string, resultKey: string): Promise<Record | null> {  
+    const recordCreateTime = Date.now();  
+    const data: RecordData = Tracker.formatData(experimentKey, resultKey);
     const response = await axios.post('/api/record', data);
     const record = response.data;
-    const existingAttributes = growthbook.getAttributes();
-    growthbook.setAttributes({
-      ...existingAttributes,
-      recordId: record.id,
-      pageLoadTime: Date.now()
-    });      
-    return record.data as unknown as Record;
+    addAttribute({
+      pageLoadTime: recordCreateTime,
+      recordId: record.id
+    })
+    return record as unknown as Record;
   }
   /**
    * Fills in the session length for a tracking record
    * @requires TrackingRecord of the user has to be in the database
    * @param recordId The id of the record stored on `growthbook` attributes
-   * @param sessionLength The session length from `growthbook` attributes
+   * @param sessionLength The session length
    */
-  public static async trackSessionLength(sessionLength: number) {    
-    const data = {
-      sessionLength: sessionLength.toString()
+  public static async trackSessionLength(sessionLength: number) {   
+    /** Sending Beacons do not work if trackers are blocked (for example uBlock origin on desktops) */
+    if (navigator.sendBeacon) {
+      const attributes = growthbook.getAttributes();
+      const sent = navigator.sendBeacon(`/api/record/${attributes.recordId}`, sessionLength.toString());
     } 
-    const attributes = growthbook.getAttributes();
-    const recordId = attributes.recordId;
-    const response = await axios.put(`/api/record/${recordId}`, data);
-    console.log("updated record: " + JSON.stringify(response.data, null, 2));
   }
   /**
    * This function formats the data needed for a log.
@@ -52,15 +51,16 @@ export default class Tracker {
    * @param experimentKey The experiment key from growthbook
    * @param resultKey The result key from growthbook   
    */
-  private static async formatData(experimentKey: string, resultKey: string): Promise<RecordData> {
+  private static formatData(experimentKey: string, resultKey: string): RecordData {
     const date = new Date();
     const destructuredDate = destructureDate(date);
 
-    const location = await getLocation();
+    const location = getLocation();
 
     const parser = Bowser.getParser(window.navigator.userAgent);
     const windowInfo = getWindowInfo(parser);
 
+    const bandwidth = Tracker.getDeviceBandwidth();
     const data: RecordData = {
       experimentId: experimentKey,
       variationId: resultKey,
@@ -76,9 +76,14 @@ export default class Tracker {
       os: windowInfo.os,
       engine: windowInfo.engine,
       platformType: windowInfo.platformType,
+      bandwidth: bandwidth,
       location: location,
       sessionLength: null
     }
     return data;
   }
-}
+
+  private static getDeviceBandwidth() {
+    return navigator.connection?.effectiveType || "not set"
+  }
+}  

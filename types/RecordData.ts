@@ -13,6 +13,7 @@ export type RecordData = {
   os: string,
   engine: string,
   platformType: string,
+  bandwidth: string
   location: string,
   sessionLength: string | null,
 }
