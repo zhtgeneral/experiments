@@ -5,7 +5,7 @@ import { HttpStatusCode } from "axios";
 /**
  * This endpoint handles finalizing a session length.
  * 
- * It checks that `sessionLength` exists on the  of the request
+ * It checks that `sessionLength` exists on the blob of the request
  * and that the id exists on params.
  * If not, throw a `400` response for `Bad request`.
  * 

@@ -1,13 +1,12 @@
 import axios from "axios";
-import { RecordData } from "@/types/RecordData";
-import { Record } from "@prisma/client"
-import getLocation from "../utils/getLocation";
 import Bowser from "bowser";
+import { Record } from "@prisma/client"
+import growthbook from "@/lib/growthbook";
+import { RecordData } from "@/types/RecordData";
+import getLocation from "@/utils/getLocation";
 import getWindowInfo from "@/utils/getWindowInfo";
 import destructureDate from "@/utils/destructureDate";
-import growthbook from "@/lib/growthbook";
 import addAttribute from "@/utils/addAttribute";
-import { networkInterfaces } from "os";
 import formatDigits from "@/utils/formatDigits";
 
 export default class Tracker {

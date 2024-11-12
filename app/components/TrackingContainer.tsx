@@ -1,6 +1,5 @@
 'use client'
 
-// import enableTracking from "@/hooks/handleSessionLength";
 import growthbook from "@/lib/growthbook";
 import Tracker from "@/lib/Tracker";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
