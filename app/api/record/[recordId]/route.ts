@@ -3,9 +3,9 @@ import prisma from '@/lib/prisma'
 import { HttpStatusCode } from "axios";
 
 /**
- * This endpoint handles updated tracking records.
+ * This endpoint handles finalizing a session length.
  * 
- * It checks that `sessionLength` exists on the body of the request
+ * It checks that `sessionLength` exists on the  of the request
  * and that the id exists on params.
  * If not, throw a `400` response for `Bad request`.
  * 
@@ -27,8 +27,12 @@ export async function POST(
   { params }: { params: { recordId: string } }
 ) {
   try {
-    const sessionLength = await req.json();
-    if (!sessionLength || !params.recordId) {
+    /** blob is the only type that gets passed by navigator.sendBeacon for now */
+    const blob = await req.blob();
+    const text = await blob.text();
+    const data = JSON.parse(text);
+
+    if (!data.sessionLength || !params.recordId) {
       return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
     }    
     const existingRecord = await prisma.record.findFirst({
@@ -49,7 +53,7 @@ export async function POST(
         id: existingRecord.id
       },
       data: {
-        sessionLength: sessionLength.toString()
+        sessionLength: data.sessionLength
       }
     })
     return NextResponse.json(updatedRecord, { status: HttpStatusCode.Ok })

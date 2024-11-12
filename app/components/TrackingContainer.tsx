@@ -1,7 +1,8 @@
 'use client'
 
-import enableTracking from "@/hooks/handleSessionLength";
+// import enableTracking from "@/hooks/handleSessionLength";
 import growthbook from "@/lib/growthbook";
+import Tracker from "@/lib/Tracker";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
 import { useEffect } from "react";
 
@@ -27,7 +28,7 @@ const TrackingContainer: React.FC<TrackingContainerProps> = ({
     growthbook.init({
       streaming: true
     })
-    enableTracking();
+    Tracker.enableTracking();
   })
   return (
     <GrowthBookProvider growthbook={growthbook}>

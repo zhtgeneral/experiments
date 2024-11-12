@@ -15,5 +15,5 @@ export type RecordData = {
   platformType: string,
   bandwidth: string
   location: string,
-  sessionLength: string | null,
+  sessionLength: number,
 }
