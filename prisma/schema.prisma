@@ -26,5 +26,5 @@ model Record {
   platformType    String    @db.VarChar(20)
   bandwidth       String    @db.VarChar(20)
   location        String    @db.VarChar(30)
-  sessionLength   String?   @db.VarChar(20) 
+  sessionLength   Float
 }
