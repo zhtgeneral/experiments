@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from '@/lib/prisma'
 import { HttpStatusCode } from "axios";
+import { RecordData } from '@/types/RecordData';
 
 /**
  * This endpoint handles creating tracking records.

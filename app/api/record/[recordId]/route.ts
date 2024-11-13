@@ -5,9 +5,11 @@ import { HttpStatusCode } from "axios";
 /**
  * This endpoint handles finalizing a session length.
  * 
- * It checks that `sessionLength` exists on the blob of the request
+ * It checks that `sessionLength` and `keylog` exist on the blob of the request
  * and that the id exists on params.
  * If not, throw a `400` response for `Bad request`.
+ * 
+ * If prevents extra arguments on the data by throwing a `400` response for `Unexpected arguments`.
  * 
  * If there is no existing tracking record, return a `404` response for `Not Found`.
  * 
@@ -23,18 +25,28 @@ import { HttpStatusCode } from "axios";
  * @param request contains a body with the type `Record`
  */
 export async function POST(
-  req: NextRequest, 
+  request: NextRequest, 
   { params }: { params: { recordId: string } }
 ) {
   try {
     /** blob is the only type that gets passed by navigator.sendBeacon for now */
-    const blob = await req.blob();
+    const blob = await request.blob();
     const text = await blob.text();
     const data = JSON.parse(text);
 
-    if (!data.sessionLength || !params.recordId) {
-      return new NextResponse("Bad Request", { status: HttpStatusCode.BadRequest });
+    if (Object.keys(data).length > 2)  {
+      return new NextResponse("Unexpected arguments", { status: HttpStatusCode.BadRequest });
+    }
+    if (data.sessionLength === undefined) {
+      return new NextResponse("Missing sessionLength", { status: HttpStatusCode.BadRequest });
+    }
+    if (data.keylog === undefined) {
+      return new NextResponse("Missing keylog", { status: HttpStatusCode.BadRequest });
+    }
+    if (!params.recordId) {
+      return new NextResponse("Missing recordId", { status: HttpStatusCode.BadRequest });
     }    
+    
     const existingRecord = await prisma.record.findFirst({
       where: {
         id: params.recordId
@@ -53,7 +65,7 @@ export async function POST(
         id: existingRecord.id
       },
       data: {
-        sessionLength: data.sessionLength
+        ...data
       }
     })
     return NextResponse.json(updatedRecord, { status: HttpStatusCode.Ok })

@@ -9,22 +9,23 @@ datasource db {
 }
 
 model Record {
-  id              String    @id @default(uuid())
-  experimentId    String    @db.VarChar(20)
-  variationId     String    @db.VarChar(20)
-  weekday         String    @db.VarChar(3)
-  day             String    @db.VarChar(2)
-  month           String    @db.VarChar(3)
-  year            String    @db.VarChar(4)
-  time            String    @db.VarChar(20)
-  createdAt       DateTime  @default(now())
-  timeRegion      String    @db.VarChar(10)
-  browser         String    @db.VarChar(20)
-  browserVersion  String    @db.VarChar(20)
-  os              String    @db.VarChar(20)
-  engine          String    @db.VarChar(20)
-  platformType    String    @db.VarChar(20)
-  bandwidth       String    @db.VarChar(20)
-  location        String    @db.VarChar(30)
-  sessionLength   Float
+  id              String    @id       @default(uuid())
+  experimentId    String    @db.Text
+  variationId     String    @db.Text
+  weekday         String    @db.Text
+  day             String    @db.Text
+  month           String    @db.Text
+  year            String    @db.Text
+  time            String    @db.Text
+  createdAt       String    @db.Text 
+  timeRegion      String    @db.Text
+  browser         String    @db.Text
+  browserVersion  String    @db.Text
+  os              String    @db.Text
+  engine          String    @db.Text
+  platformType    String    @db.Text
+  bandwidth       String    @db.Text
+  location        String    @db.Text
+  sessionLength   Decimal   @db.Decimal() @default(0)
+  keylog          String    @db.Text      @default("")
 }
