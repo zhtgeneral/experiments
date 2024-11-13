@@ -2,27 +2,20 @@ import axios from "axios";
 import Bowser from "bowser";
 import { Record } from "@prisma/client"
 import growthbook from "@/lib/growthbook";
+import Metadata from "@/lib/Metadata";
 import { RecordData } from "@/types/RecordData";
 import getLocation from "@/utils/getLocation";
 import getWindowInfo from "@/utils/getWindowInfo";
 import destructureDate from "@/utils/destructureDate";
-import addAttribute from "@/utils/addAttribute";
 import formatDigits from "@/utils/formatDigits";
 
 export default class Tracker {
-  private static isTracking = false;
-  private static onPage = true;
-  private static sessionLength = 0;
-  private static recordId = null;
-  private static lastVisited = Date.now();
-  private static keylog = "";
-
   /**
    * This function enables tracking only when the user is on the page.
    */
   public static enableTracking() {
-    if (Tracker.isTracking) return;
-    Tracker.isTracking = true;
+    if (Metadata.getIsTracking()) return;
+    Metadata.setIsTracking(true);
 
     window.addEventListener('beforeunload', Tracker.handleBeforeUnload);
     document.addEventListener('visibilitychange', Tracker.handleVisibilityChange);
@@ -51,7 +44,7 @@ export default class Tracker {
    */
   private static async handleKeyDown(ev: KeyboardEvent) {
     console.log(ev.key);
-    Tracker.keylog += ev.key;
+    Metadata.incrementKeylog(ev.key);
   };
   /**
    * This cleanup function removes the event listeners.
@@ -59,8 +52,8 @@ export default class Tracker {
    * This should be called after the user exits the page.
    */
   public static handleCleanup() {
-    if (!Tracker.isTracking) return;
-    Tracker.isTracking = false;
+    if (!Metadata.getIsTracking()) return;
+    Metadata.setIsTracking(false);
 
     window.removeEventListener('beforeunload', Tracker.handleBeforeUnload);
     document.removeEventListener('visibilitychange', Tracker.handleVisibilityChange);
@@ -75,11 +68,11 @@ export default class Tracker {
    * @param resultKey The key of the result from `growthbook`
    */
   public static async createRecord(experimentKey: string, resultKey: string): Promise<Record | null> {  
-    Tracker.lastVisited = Date.now();  
+    Metadata.setLastVisited(Date.now());
     const data: RecordData = Tracker.formatData(experimentKey, resultKey);
     const response = await axios.post('/api/record', data);
     const record = response.data;
-    Tracker.recordId = record.id;
+    Metadata.setRecordId(record.id);
     return record as Record;
   }
   /**
@@ -87,41 +80,41 @@ export default class Tracker {
    * @requires TrackingRecord of the user has to be in the database
    */
   private static async trackSessionLength() {   
-    if (Tracker.onPage) {
-      Tracker.sessionLength = Tracker.updateSessionLength();
+    if (Metadata.getOnPage()) {
+      Metadata.setSessionLength(Tracker.updateSessionLength());
     }
     /** Sending Beacons do not work if trackers are blocked (for example uBlock origin on desktops) */
     if (navigator.sendBeacon) {      
       /** blob | string is the only accepted type by sendBeacon */
       const data = JSON.stringify({ 
-        sessionLength: Tracker.sessionLength,
-        keylog: Tracker.keylog
+        sessionLength: Metadata.getSessionLength(),
+        keylog: Metadata.getKeylog()
       });
       const blob = new Blob([data], { type: 'application/json' });
-      navigator.sendBeacon(`/api/record/${Tracker.recordId}`, blob);
+      navigator.sendBeacon(`/api/record/${Metadata.getRecordId()}`, blob);
     } 
   }
   /**
    * This function updates the session length
    */
   private static handlePageLeave() {
-    Tracker.onPage = false;
-    Tracker.sessionLength = Tracker.updateSessionLength();
+    Metadata.setOnPage(false);
+    Metadata.setSessionLength(Tracker.updateSessionLength());
   }
   /**
    * This function updates the time last visited
    */
   private static handlePageReturn() {
-    Tracker.onPage = true;
-    Tracker.lastVisited = Date.now();
+    Metadata.setOnPage(true);
+    Metadata.setLastVisited(Date.now());
   }
   /**
    * This function gets the new session time using the last visited time
    * plus the new session length.
    */
   private static updateSessionLength(): number {
-    const newSessionLength = Tracker.getSessionLength(Tracker.lastVisited);
-    return formatDigits(Tracker.sessionLength +  newSessionLength);
+    const newSessionLength = Tracker.getSessionLength(Metadata.getLastVisited());
+    return formatDigits(Metadata.getSessionLength() +  newSessionLength);
   }
   /**
    * This helper function gets the sesion length using the last visited time
