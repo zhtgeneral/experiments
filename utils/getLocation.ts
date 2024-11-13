@@ -8,7 +8,7 @@ import parsePosition from "@/utils/parseLocation";
  * It handles rejected cases correctly.
  */
 export default function getLocation(): string {
-  var location = "";
+  var location = "not set";
   const geo = navigator.geolocation;
   geo.getCurrentPosition(
     (position: GeolocationPosition) => {
@@ -33,5 +33,5 @@ export default function getLocation(): string {
       return location;
       }
   );
-  return "not set";
+  return location;
 }

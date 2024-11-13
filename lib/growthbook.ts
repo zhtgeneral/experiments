@@ -10,5 +10,3 @@ const growthbook = new GrowthBook({
   },
 });
 export default growthbook;
-
-

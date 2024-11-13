@@ -15,5 +15,6 @@ export type RecordData = {
   platformType: string,
   bandwidth: string
   location: string,
-  sessionLength: number,
+  sessionLength?: number,
+  keylog?: string
 }

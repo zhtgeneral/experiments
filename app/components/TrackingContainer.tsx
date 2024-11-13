@@ -28,7 +28,7 @@ const TrackingContainer: React.FC<TrackingContainerProps> = ({
       streaming: true
     })
     Tracker.enableTracking();
-  })
+  }, [])
   return (
     <GrowthBookProvider growthbook={growthbook}>
       {children}
