@@ -2,7 +2,7 @@
 
 import { useFeature } from "@growthbook/growthbook-react";
 import FeatureImage from "@/app/components/feature/FeatureImage";
-import growthbook from "@/lib/growthbook";
+import growthbook from "@/app/lib/growthbook";
 import FeatureHeader from "@/app/components/feature/FeatureHeader";
 import Nav from "@/app/components/Nav";
 

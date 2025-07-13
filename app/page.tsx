@@ -1,6 +1,6 @@
 'use client'
 
-import ExperimentPage from "@/app/components/ExperimentPage";
+import ExperimentPage from "@/app/pages/ExperimentPage";
 import TrackingContainer from "@/app/components/TrackingContainer";
 
 /**
