@@ -26,14 +26,34 @@ NEXT_PUBLIC_DATABASE_URL=<mongodb+srv://<username>:<password>@<cluster-name>.avs
 
 ❗Warning: The app will fail without the environment secrets.
 
-Once that is done, install the packages and run the app
+Once that is done, install the packages
 
 ```bash
 npm install
-npm run dev
 ```
 
-## Verifying the app ✅
+## Testing the app 🧪
+
+I used Vitest to create the integration tests.
+
+To run the tests, run this command.
+
+```bash
+npm test
+```
+
+The tests should look something like this
+![IntegrationTests](./pictures/VitestIntegration.png)
+
+---
+
+## Interacting with the app ✅
+
+First run the app. Use this command.
+
+```bash
+npm run dev
+```
 
 Open up the database either on the online dashboard or through MongoDB Atlas. Once you can see the table Record in the cluster, continue to the next step. It should look like this.
 
