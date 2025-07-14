@@ -1,7 +1,7 @@
 'use client'
 
-import growthbook from "@/lib/growthbook";
-import Tracker from "@/lib/Tracker";
+import growthbook from "@/app/lib/growthbook";
+import Tracker from "@/app/src/Tracker";
 import { GrowthBookProvider } from "@growthbook/growthbook-react";
 import { useEffect } from "react";
 
@@ -17,9 +17,9 @@ interface TrackingContainerProps {
  * 
  * Then it allows children components to access growthbook.
  */
-const TrackingContainer: React.FC<TrackingContainerProps> = ({
+function TrackingContainer({
   children
-}) => {  
+}: TrackingContainerProps) {  
   useEffect(() => {
     growthbook.setAttributes({
       id: Math.random()

@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface FeatureHeaderProps {
   isOn: boolean,
   value: boolean
@@ -12,19 +10,16 @@ interface FeatureHeaderProps {
  * Otherwise it displays the version of the experiment depending on the feature value.
  * @requires value is a boolean
  */
-const FeatureHeader: React.FC<FeatureHeaderProps> = ({
+function FeatureHeader({
   isOn,
   value
-}) => {
-  if (isOn) {
-    if (value) {
-      return "Your experiment version: Feature A"
-    } else {
-      return "Your experiment version: Feature B"
-    }
-  } else {
-    return "Experiments not active" 
-  }
+}: FeatureHeaderProps) {
+  if (!isOn) 
+    return "Experiments not active";
+
+  return value
+  ? "Your experiment version: Feature A" 
+  : "Your experiment version: Feature B";
 };
 
 export default FeatureHeader;

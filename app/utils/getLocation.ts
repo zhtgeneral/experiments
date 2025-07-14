@@ -1,4 +1,4 @@
-import parsePosition from "@/utils/parseLocation";
+import parsePosition from "@/app/utils/parseLocation";
 
 /**
  * This function prompts the user to yield their precise geolocation.

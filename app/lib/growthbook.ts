@@ -1,5 +1,5 @@
 import { GrowthBook } from "@growthbook/growthbook-react";
-import Tracker from "@/lib/Tracker";
+import Tracker from "@/app/src/Tracker";
 
 const growthbook = new GrowthBook({
   apiHost: "https://cdn.growthbook.io",
