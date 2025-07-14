@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import prisma from '@/app/lib/prisma'
+import RecordService from "@/app/services/RecordService";
 
 /**
  * This endpoint handles finalizing a session length.
@@ -25,7 +26,7 @@ import prisma from '@/app/lib/prisma'
  */
 export async function POST(
   request: NextRequest, 
-  { params }: { params: { recordId: string } }
+  { params }: { params: { recordId?: string } }
 ) {
   /** blob is the only type that gets passed by navigator.sendBeacon for now */
   try {
@@ -34,32 +35,30 @@ export async function POST(
     var data = JSON.parse(text);
   } catch (error: any) {
     console.error("/api/record:recordId POST parse data: " + error);
-    return NextResponse.json({ success: false, error: 'Unable to parse data' }, { status: 400 });
+    return NextResponse.json({ success: false, error: 'Blob data required' }, { status: 400 });
   }  
 
+  const { sessionLength, keylog } = data;
   const { recordId } = params;
 
-  if (data.sessionLength === undefined) {
+  if (sessionLength === undefined) {
     return NextResponse.json({ success: false, error: 'sessionLength missing from data' }, { status: 400 });
   }
-  if (data.keylog === undefined) {
+  if (typeof sessionLength !== 'number') {
+    return NextResponse.json({ success: false, error: 'sessionLength was not a number' }, { status: 400 });
+  }
+  if (keylog === undefined) {
     return NextResponse.json({ success: false, error: 'keylog missing from data' }, { status: 400 });
+  }
+  if (typeof keylog !== 'string') {
+    return NextResponse.json({ success: false, error: 'keylog was not a string' }, { status: 400 });
   }
   if (!recordId || recordId === undefined) {
     return NextResponse.json({ success: false, error: 'recordId missing from params' }, { status: 400 });
   }    
 
   try {        
-    var existingRecord = await prisma.record.findFirst({
-      where: {
-        id: recordId
-      },
-      orderBy: [
-        {
-          createdAt: "desc"
-        }
-      ]
-    });
+    var existingRecord = await RecordService.getRecordById(recordId);
   } catch (error: any) {
     console.error("/api/record:recordId POST find record error: " + error);
     return NextResponse.json({ success: false, error: 'Unable to find Record' }, { status: 500 });
@@ -71,14 +70,7 @@ export async function POST(
   }
 
   try {
-    var updatedRecord = await prisma.record.update({
-      where: {
-        id: existingRecord.id
-      },
-      data: {
-        ...data
-      }
-    })
+    var updatedRecord = await RecordService.updateRecord(existingRecord.id, data);
   } catch (error: any) {
     console.error("/api/record:recordId POST update record error: " + error);
     return NextResponse.json({ success: false, error: 'Unable to update Record' }, { status: 500 });

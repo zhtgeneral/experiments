@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from '@/app/lib/prisma'
-import { RecordData } from '@/app/types/RecordData'
 import { RecordDataSchema } from '@/app/types/RecordData';
+import RecordService from "@/app/services/RecordService";
 
 /**
  * This endpoint handles creating tracking records.
@@ -19,7 +18,7 @@ export async function POST(request: NextRequest) {
   const { recordData } = await request.json();
   if (!recordData) {
     console.log("/api/record POST body missing recordData");
-    return NextResponse.json({ success: false, error: "recirdData missing from body" } , { status: 400 });
+    return NextResponse.json({ success: false, error: "recordData missing from body" } , { status: 400 });
   }
 
   const backendValidation = RecordDataSchema.safeParse(recordData);
@@ -29,11 +28,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {    
-    var newRecord = await prisma.record.create({
-      data: {
-        ...recordData
-      },
-    })  
+    var newRecord = await RecordService.createRecord(recordData); 
   } catch (error: any) {
     console.log("/api/record POST unable to create record: " + error);
     return NextResponse.json({ success: false, error: "Unable to create record" } , { status: 500 });
